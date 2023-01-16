@@ -26,7 +26,7 @@ def object_detection_video():
     weights_path = r'config_n_weights\yolov3.weights'
     font_scale = 1
     thickness = 1
-    url = "coconames.txt"
+    url = "https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt"
     f = urllib.request.urlopen(url)
     labels = [line.decode('utf-8').strip() for  line in f]
     #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
@@ -173,7 +173,7 @@ def object_detection_image():
         nmsThreshold= st.slider('Threshold', 0, 100, 20)
         #classNames = []
         whT = 320
-        url = "https://raw.githubusercontent.com/zhoroh/ObjectDetection/master/labels/coconames.txt"
+        url = "https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt"
         f = urllib.request.urlopen(url)
         classNames = [line.decode('utf-8').strip() for  line in f]
         #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
@@ -240,8 +240,6 @@ def object_detection_image():
         
         cv2.destroyAllWindows()
         my_bar.progress(100)
-
-
 
 
 def main():

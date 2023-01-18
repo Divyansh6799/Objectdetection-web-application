@@ -4,8 +4,9 @@ import cv2
 from PIL import Image, ImageEnhance
 import numpy as np
 import os
-#import tensorflow as tf
-#import tensorflow_hub as hub
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
+import tensorflow_hub as hub
 import time ,sys
 from streamlit_embedcode import github_gist
 import urllib.request
@@ -26,18 +27,16 @@ def object_detection_video():
     weights_path = r'config_n_weights\yolov3.weights'
     font_scale = 1
     thickness = 1
-    url = "https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt"
+    url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/50aeb4cdf52b1ef00442ca9086b1ceebf71357d6/labels/coconames.txt"
     f = urllib.request.urlopen(url)
     labels = [line.decode('utf-8').strip() for  line in f]
     #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
     #lines = f.readlines()
     #labels = [line.strip() for line in lines]
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
-
     net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
-
     ln = net.getLayerNames()
-    ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
+    ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     st.title("Object Detection for Videos")
     st.subheader("""
     This object detection project takes in a video and outputs the video with bounding boxes created around the objects in the video 
@@ -57,11 +56,9 @@ def object_detection_video():
         #video_file = 'street.mp4'
         cap = cv2.VideoCapture(vid)
         _, image = cap.read()
+        print(image)
         h, w = image.shape[:2]
         #out = cv2.VideoWriter(output_name, cv2.VideoWriter_fourcc#(*'avc3'), fps, insize)
-
-
-
 
         fourcc = cv2.VideoWriter_fourcc(*'mpv4')
         out = cv2.VideoWriter("detected_video.mp4", fourcc, 20.0, (w, h))
@@ -152,10 +149,7 @@ def object_detection_video():
             
         cap.release()
         cv2.destroyAllWindows()
-        
-    
-        
-        
+          
 
 def object_detection_image():
     st.title('Object Detection for Images')
@@ -172,8 +166,8 @@ def object_detection_image():
         confThreshold =st.slider('Confidence', 0, 100, 50)
         nmsThreshold= st.slider('Threshold', 0, 100, 20)
         #classNames = []
-        whT = 320
-        url = "https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt"
+        whT = 416
+        url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/50aeb4cdf52b1ef00442ca9086b1ceebf71357d6/labels/coconames.txt"
         f = urllib.request.urlopen(url)
         classNames = [line.decode('utf-8').strip() for  line in f]
         #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
@@ -220,46 +214,112 @@ def object_detection_image():
                           (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (240, 0, 240), 2)
             df= pd.DataFrame(list(zip(obj_list,confi_list)),columns=['Object Name','Confidence'])
             if st.checkbox("Show Object's list" ):
-                
                 st.write(df)
             if st.checkbox("Show Confidence bar chart" ):
                 st.subheader('Bar chart for confidence levels')
-                
                 st.bar_chart(df["Confidence"])
            
-        blob = cv2.dnn.blobFromImage(img2, 1 / 255, (whT, whT), [0, 0, 0], 1, crop=False)
+        blob = cv2.dnn.blobFromImage(img2, 1 / 255.0, (whT, whT), (0, 0, 0), True, crop=False)
         net.setInput(blob)
         layersNames = net.getLayerNames()
-        outputNames = [layersNames[i-1] for i in net.getUnconnectedOutLayers()]
+        outputNames = [layersNames[i[0]-1] for i in net.getUnconnectedOutLayers()]
         outputs = net.forward(outputNames)
         findObjects(outputs,img2)
-    
         st.image(img2, caption='Proccesed Image.')
-        
         cv2.waitKey(0)
-        
         cv2.destroyAllWindows()
         my_bar.progress(100)
 
+#function for landmark identification
+def landmark_detection() :
+    st.title('Landmark identification')
+    st.subheader("This project takes the input image and identifies the landmark in the image[only Asia's landmarks].")
+    choice  = st.sidebar.selectbox("Choose Region",("Asia","Africa","Europe","North America","South America","Oceania & Antarctica"))
+    uploaded_file = st.file_uploader("Upload a image",type='jpg')
+    
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Image.')
+        my_bar = st.progress(0)
+
+        TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
+        LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_asia_V1_label_map.csv'
+
+        IMAGE_SHAPE = (321, 321)
+        classifier = tf.keras.Sequential([hub.KerasLayer(TF_MODEL_URL,
+                                                 input_shape=IMAGE_SHAPE+(3,),
+                                                 output_key="predictions:logits")])
+        df = pd.read_csv(LABEL_MAP_URL)
+        label_map = dict(zip(df.id, df.name))
+        img = image.resize(IMAGE_SHAPE)
+        img = np.array(img)/255.0
+        img = img[np.newaxis, ...]
+        prediction = classifier.predict(img)
+        st.header(label_map[np.argmax(prediction)])
+        my_bar.progress(100)
 
 def main():
-    new_title = '<p style="font-size: 42px;">Welcome to my Object Detection App!</p>'
+    page_bg_img = f"""
+    <style>
+    [data-testid="stAppViewContainer"] > .main {{
+    # background-image: url("https://raw.githubusercontent.com/andfanilo/social-media-tutorials/master/20220817-streamlit_css_background/image.jpg");
+    background-size: 150%;
+    background-position: top ;
+    background-repeat: no-repeat;
+    background-attachment: local;
+    }}
+    [data-testid="stSidebar"] > div:first-child {{
+    # background-image: url("https://images.unsplash.com/photo-1483232539664-d89822fb5d3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&w=1000&q=80");
+    background-size: 100%;
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    }}
+    [data-testid="stHeader"] {{
+    background: rgba(0,0,0,0);
+    }}
+    [data-testid="stToolbar"] {{
+    right: 2rem;
+    }}
+    </style>
+    """
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+    new_title = '<p style="font-size: 80px; color:blue">DETECTO</p>''<p style="font-size: 30px;">Welcome to The Object Detection App!</p>'
     read_me_0 = st.markdown(new_title, unsafe_allow_html=True)
-
     read_me = st.markdown("""
-    This project was built using Streamlit and OpenCV 
+    This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
     and images.
-    
-    
     This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video or image. The full list of the classes can be found 
-    [here](https://github.com/KaranJagtiani/YOLO-Coco-Dataset-Custom-Classes-Extractor/blob/main/classes.txt)"""
+    [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
+
+    Select Option To Try Some Features which present On Sidebar.....
+
+    Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
+
+    Follow Us On:
+        [Github](https://github.com/Divyansh6799/) &
+        [Linkedin](https://www.linkedin.com/in/divyansh-trivedi-1551581bb/)
+        """
     )
-    st.sidebar.title("Select Activity")
-    choice  = st.sidebar.selectbox("MODE",("About","Object Detection(Image)","Object Detection(Video)"))
-    #["Show Instruction","Landmark identification","Show the #source code", "About"]
-    
+    st.sidebar.title("DETECTO")
+    choice  = st.sidebar.selectbox("Select OPTION",("About","Object Detection(Image)","Object Detection(Video)","Landmark identification"))
+    read=st.sidebar.markdown("""
+    This App was built using Streamlit and OpenCV 
+    to demonstrate YOLO Object detection in both videos(pre-recorded)
+    and images.
+    This YOLO object Detection project can detect 80 objects(i.e classes)
+    in either a video or image. The full list of the classes can be found 
+    [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
+
+    Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
+
+    Follow Us On:
+        [Github](https://github.com/Divyansh6799/) &
+        [Linkedin](https://www.linkedin.com/in/divyansh-trivedi-1551581bb/)
+        """
+    )
     if choice == "Object Detection(Image)":
         #st.subheader("Object Detection")
         read_me_0.empty()
@@ -273,7 +333,6 @@ def main():
         object_detection_video()
         #if object_detection_video.has_beenCalled:
         try:
-
             clip = moviepy.VideoFileClip('detected_video.mp4')
             clip.write_videofile("myvideo.mp4")
             st_video = open('myvideo.mp4','rb')
@@ -283,8 +342,14 @@ def main():
         except OSError:
             ''
 
+    elif choice == "Landmark identification":
+        read_me_0.empty()
+        read_me.empty()
+        landmark_detection() 
+
     elif choice == "About":
         print()
+        read.empty()
         
 
 if __name__ == '__main__':

@@ -233,18 +233,34 @@ def object_detection_image():
 #function for landmark identification
 def landmark_detection() :
     st.title('Landmark identification')
-    st.subheader("This project takes the input image and identifies the landmark in the image[only Asia's landmarks].")
-    choice  = st.sidebar.selectbox("Choose Region",("Asia","Africa","Europe","North America","South America","Oceania & Antarctica"))
+    st.subheader("This takes the input image and identifies the landmark in the image from perticular Region.[so Select Region from below].")
+    chs_region  = st.selectbox("Choose Region",("Asia","Africa","Europe","North America","South America","Oceania & Antarctica"))
     uploaded_file = st.file_uploader("Upload a image",type='jpg')
     
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image.')
         my_bar = st.progress(0)
-
-        TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
-        LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_asia_V1_label_map.csv'
-
+        TF_MODEL_URL=""
+        LABEL_MAP_URL=""
+        if chs_region=="Asia":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_asia_V1_label_map.csv'
+        elif chs_region=="Africa":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_africa_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_africa_V1_label_map.csv'
+        elif chs_region=="Europe":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_europe_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_europe_V1_label_map.csv'
+        elif chs_region=="North America":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_north_america_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_north_america_V1_label_map.csv'
+        elif chs_region=="South America":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_south_america_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_south_america_V1_label_map.csv'
+        elif chs_region=="Oceania & Antarctica":
+            TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_oceania_antarctica_V1/1'
+            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_oceania_antarctica_V1_label_map.csv'
         IMAGE_SHAPE = (321, 321)
         classifier = tf.keras.Sequential([hub.KerasLayer(TF_MODEL_URL,
                                                  input_shape=IMAGE_SHAPE+(3,),
@@ -262,14 +278,14 @@ def main():
     page_bg_img = f"""
     <style>
     [data-testid="stAppViewContainer"] > .main {{
-    # background-image: url("https://raw.githubusercontent.com/andfanilo/social-media-tutorials/master/20220817-streamlit_css_background/image.jpg");
+    background-image: url("https://plus.unsplash.com/premium_photo-1670659359754-02934f07580f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fHRlY2hub2xvZ3klMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
     background-size: 150%;
     background-position: top ;
     background-repeat: no-repeat;
     background-attachment: local;
     }}
     [data-testid="stSidebar"] > div:first-child {{
-    # background-image: url("https://images.unsplash.com/photo-1483232539664-d89822fb5d3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&w=1000&q=80");
+    background-image: url("https://images.unsplash.com/photo-1556139943-4bdca53adf1e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjZ8fGNvbG9yfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
     background-size: 100%;
     background-position: center; 
     background-repeat: no-repeat;
@@ -289,12 +305,12 @@ def main():
     read_me = st.markdown("""
     This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
-    and images.
+    & images, Also Identify Landmarks Of the world.
     This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video or image. The full list of the classes can be found 
     [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
 
-    Select Option To Try Some Features which present On Sidebar.....
+    Select Option To Try Features in Sidebar which present On Left .....
 
     Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
 
@@ -310,7 +326,7 @@ def main():
     to demonstrate YOLO Object detection in both videos(pre-recorded)
     and images.
     This YOLO object Detection project can detect 80 objects(i.e classes)
-    in either a video or image. The full list of the classes can be found 
+    in either a video & images, Also Identify Landmarks Of the world. The full list of the classes can be found 
     [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
 
     Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 

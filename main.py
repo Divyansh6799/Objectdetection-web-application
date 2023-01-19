@@ -30,21 +30,18 @@ def object_detection_video():
     url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/50aeb4cdf52b1ef00442ca9086b1ceebf71357d6/labels/coconames.txt"
     f = urllib.request.urlopen(url)
     labels = [line.decode('utf-8').strip() for  line in f]
-    #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
-    #lines = f.readlines()
-    #labels = [line.strip() for line in lines]
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
     net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
     ln = net.getLayerNames()
     ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     st.title("Object Detection for Videos")
     st.subheader("""
-    This object detection project takes in a video and outputs the video with bounding boxes created around the objects in the video 
+    This object detection App takes in a video and outputs the video with bounding boxes created around the objects in the video 
     """
     )
+    st.write("The Optimal Video Length is 30sec or less For Better and accurate Detection.")
     uploaded_video = st.file_uploader("Upload Video", type = ['mp4','mpeg','mov'])
     if uploaded_video != None:
-        
         vid = uploaded_video.name
         with open(vid, mode='wb') as f:
             f.write(uploaded_video.read()) # save video to disk
@@ -53,14 +50,13 @@ def object_detection_video():
         video_bytes = st_video.read()
         st.video(video_bytes)
         st.write("Uploaded Video")
-        #video_file = 'street.mp4'
+        st.write("It takes few minutes to give output, Please Wait.....")
         cap = cv2.VideoCapture(vid)
         _, image = cap.read()
         print(image)
         h, w = image.shape[:2]
         #out = cv2.VideoWriter(output_name, cv2.VideoWriter_fourcc#(*'avc3'), fps, insize)
-
-        fourcc = cv2.VideoWriter_fourcc(*'mpv4')
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter("detected_video.mp4", fourcc, 20.0, (w, h))
         count = 0
         while True:
@@ -108,10 +104,8 @@ def object_detection_video():
 
                 # perform the non maximum suppression given the scores defined before
                 idxs = cv2.dnn.NMSBoxes(boxes, confidences, SCORE_THRESHOLD, IOU_THRESHOLD)
-
                 font_scale = 0.6
                 thickness = 1
-
                 # ensure at least one detection exists
                 if len(idxs) > 0:
                     # loop over the indexes we are keeping
@@ -137,50 +131,48 @@ def object_detection_video():
                             fontScale=font_scale, color=(0, 0, 0), thickness=thickness)
 
                 out.write(image)
-                cv2.imshow("image", image)
-                
+                cv2.imshow("Detection", image)
                 if ord("q") == cv2.waitKey(1):
                     break
             else:
                 break
 
-
         #return "detected_video.mp4"
-            
         cap.release()
         cv2.destroyAllWindows()
           
 
-def object_detection_image():
-    st.title('Object Detection for Images')
-    st.subheader("""
-    This object detection project takes in an image and outputs the image with bounding boxes created around the objects in the image
-    """)
-    file = st.file_uploader('Upload Image', type = ['jpg','png','jpeg'])
-    if file!= None:
-        img1 = Image.open(file)
-        img2 = np.array(img1)
-
-        st.image(img1, caption = "Uploaded Image")
+#function for object detection
+def obj_detection_image():
+    st.title('Object Detection For Images')
+    st.subheader("This object detection App takes the input as image and outputs the image with objects bounded in a rectangle with confidence score.")
+    uploaded_file = st.file_uploader("Upload a image",type='jpg')
+    if uploaded_file != None:
+        image1 = Image.open(uploaded_file)
+        image2 =np.array(image1)
+        st.image(image1, caption='Uploaded Image.')
+        text = st.write("It takes few minutes to give output, Please Wait.....")
         my_bar = st.progress(0)
         confThreshold =st.slider('Confidence', 0, 100, 50)
         nmsThreshold= st.slider('Threshold', 0, 100, 20)
-        #classNames = []
-        whT = 416
-        url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/50aeb4cdf52b1ef00442ca9086b1ceebf71357d6/labels/coconames.txt"
-        f = urllib.request.urlopen(url)
-        classNames = [line.decode('utf-8').strip() for  line in f]
-        #f = open(r'C:\Users\Olazaah\Downloads\stream\labels\coconames.txt','r')
-        #lines = f.readlines()
-        #classNames = [line.strip() for line in lines]
-        config_path = r'config_n_weights\yolov3.cfg'
-        weights_path = r'config_n_weights\yolov3.weights'
-        net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
+        whT = 320
+        #### LOAD MODEL
+        ## Coco Names
+        classesFile = r'labels\coconames.txt'
+        classNames = []
+        with open(classesFile, 'rt') as f:
+            classNames = f.read().split('\n')
+            
+        ## Model Files        
+        modelConfiguration = r'config_n_weights\yolov3.cfg'
+        modelWeights = r'config_n_weights\yolov3.weights'
+        net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
         net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
         net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-
+        
+        #finding the objects
         def findObjects(outputs,img):
-            hT, wT, cT = img2.shape
+            hT, wT, cT = image2.shape
             bbox = []
             classIds = []
             confs = []
@@ -201,17 +193,17 @@ def object_detection_image():
             confi_list =[]
             #drawing rectangle around object
             for i in indices:
-                i = i
+                i = i[0]
                 box = bbox[i]
                 x, y, w, h = box[0], box[1], box[2], box[3]
                 # print(x,y,w,h)
-                cv2.rectangle(img2, (x, y), (x+w,y+h), (240, 54 , 230), 2)
+                cv2.rectangle(image2, (x, y), (x+w,y+h), (255, 0 , 255), 2)
                 #print(i,confs[i],classIds[i])
                 obj_list.append(classNames[classIds[i]].upper())
                 
                 confi_list.append(int(confs[i]*100))
-                cv2.putText(img2,f'{classNames[classIds[i]].upper()} {int(confs[i]*100)}%',
-                          (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (240, 0, 240), 2)
+                cv2.putText(image2,f'{classNames[classIds[i]].upper()} {int(confs[i]*100)}%',
+                          (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
             df= pd.DataFrame(list(zip(obj_list,confi_list)),columns=['Object Name','Confidence'])
             if st.checkbox("Show Object's list" ):
                 st.write(df)
@@ -219,27 +211,28 @@ def object_detection_image():
                 st.subheader('Bar chart for confidence levels')
                 st.bar_chart(df["Confidence"])
            
-        blob = cv2.dnn.blobFromImage(img2, 1 / 255.0, (whT, whT), (0, 0, 0), True, crop=False)
+        blob = cv2.dnn.blobFromImage(image2, 1 / 255, (whT, whT), [0, 0, 0], 1, crop=False)
         net.setInput(blob)
         layersNames = net.getLayerNames()
-        outputNames = [layersNames[i[0]-1] for i in net.getUnconnectedOutLayers()]
+        outputNames = [(layersNames[i[0] - 1]) for i in net.getUnconnectedOutLayers()]
         outputs = net.forward(outputNames)
-        findObjects(outputs,img2)
-        st.image(img2, caption='Proccesed Image.')
+        findObjects(outputs,image2)
+        text.empty()
+        st.image(image2, caption='Proccesed Image.')
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         my_bar.progress(100)
-
+        
 #function for landmark identification
 def landmark_detection() :
     st.title('Landmark identification')
     st.subheader("This takes the input image and identifies the landmark in the image from perticular Region.[so Select Region from below].")
     chs_region  = st.selectbox("Choose Region",("Asia","Africa","Europe","North America","South America","Oceania & Antarctica"))
     uploaded_file = st.file_uploader("Upload a image",type='jpg')
-    
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image.')
+        st.write("It takes few minutes to give output, Please Wait.....")
         my_bar = st.progress(0)
         TF_MODEL_URL=""
         LABEL_MAP_URL=""
@@ -279,13 +272,13 @@ def main():
     <style>
     [data-testid="stAppViewContainer"] > .main {{
     background-image: url("https://plus.unsplash.com/premium_photo-1670659359754-02934f07580f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fHRlY2hub2xvZ3klMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
-    background-size: 150%;
+    background-size: 100%;
     background-position: top ;
-    background-repeat: no-repeat;
+    background-repeat: repeat;
     background-attachment: local;
     }}
     [data-testid="stSidebar"] > div:first-child {{
-    background-image: url("https://images.unsplash.com/photo-1556139943-4bdca53adf1e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjZ8fGNvbG9yfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
+    background-image: url("https://images.unsplash.com/photo-1470811976196-8ee4fa278c5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Mnw0NzI2NTI5fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
     background-size: 100%;
     background-position: center; 
     background-repeat: no-repeat;
@@ -305,7 +298,7 @@ def main():
     read_me = st.markdown("""
     This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
-    & images, Also Identify Landmarks Of the world.
+    & images, Also Identify the Landmarks Of the world.
     This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video or image. The full list of the classes can be found 
     [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
@@ -324,9 +317,8 @@ def main():
     read=st.sidebar.markdown("""
     This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
-    and images.
-    This YOLO object Detection project can detect 80 objects(i.e classes)
-    in either a video & images, Also Identify Landmarks Of the world. The full list of the classes can be found 
+    and images.This YOLO object Detection project can detect 80 objects(i.e classes)
+    in either a video & images, Also Identify the Landmarks Of the world. The full list of the classes can be found 
     [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
 
     Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
@@ -341,7 +333,7 @@ def main():
         read_me_0.empty()
         read_me.empty()
         #st.title('Object Detection')
-        object_detection_image()
+        obj_detection_image()
     elif choice == "Object Detection(Video)":
         read_me_0.empty()
         read_me.empty()

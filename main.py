@@ -50,7 +50,7 @@ def object_detection_video():
         video_bytes = st_video.read()
         st.video(video_bytes)
         st.write("Uploaded Video")
-        st.write("It takes few minutes to give output, Please Wait.....")
+        text_1 = st.markdown("It takes few minutes to give output, Please Wait.....")
         cap = cv2.VideoCapture(vid)
         _, image = cap.read()
         print(image)
@@ -129,6 +129,8 @@ def object_detection_video():
                         # now put the text (label: confidence %)
                         cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,
                             fontScale=font_scale, color=(0, 0, 0), thickness=thickness)
+                        cv2.putText(image, "press q to exit", (10,20), cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=font_scale, color=(0,0,255), thickness=4)
 
                 out.write(image)
                 cv2.imshow("Detection", image)
@@ -137,7 +139,7 @@ def object_detection_video():
             else:
                 break
 
-        #return "detected_video.mp4"
+        text_1.empty()
         cap.release()
         cv2.destroyAllWindows()
           
@@ -151,7 +153,7 @@ def obj_detection_image():
         image1 = Image.open(uploaded_file)
         image2 =np.array(image1)
         st.image(image1, caption='Uploaded Image.')
-        text = st.write("It takes few minutes to give output, Please Wait.....")
+        text = st.markdown("It takes few minutes to give output, Please Wait.....")
         my_bar = st.progress(0)
         confThreshold =st.slider('Confidence', 0, 100, 50)
         nmsThreshold= st.slider('Threshold', 0, 100, 20)
@@ -228,11 +230,11 @@ def landmark_detection() :
     st.title('Landmark identification')
     st.subheader("This takes the input image and identifies the landmark in the image from perticular Region.[so Select Region from below].")
     chs_region  = st.selectbox("Choose Region",("Asia","Africa","Europe","North America","South America","Oceania & Antarctica"))
-    uploaded_file = st.file_uploader("Upload a image",type='jpg')
+    uploaded_file = st.file_uploader("Upload a image",type=['jpg','jfif','png'])
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image.')
-        st.write("It takes few minutes to give output, Please Wait.....")
+        text_2 = st.markdown("It takes few minutes to give output, Please Wait.....")
         my_bar = st.progress(0)
         TF_MODEL_URL=""
         LABEL_MAP_URL=""
@@ -264,6 +266,7 @@ def landmark_detection() :
         img = np.array(img)/255.0
         img = img[np.newaxis, ...]
         prediction = classifier.predict(img)
+        text_2.empty()
         st.header(label_map[np.argmax(prediction)])
         my_bar.progress(100)
 

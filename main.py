@@ -27,7 +27,7 @@ def object_detection_video():
     weights_path = "yolov3.weights"
     font_scale = 1
     thickness = 1
-    url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/50aeb4cdf52b1ef00442ca9086b1ceebf71357d6/labels/coconames.txt"
+    url = "coco.names"
     f = urllib.request.urlopen(url)
     labels = [line.decode('utf-8').strip() for  line in f]
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
@@ -220,8 +220,8 @@ def obj_detection_image():
         findObjects(outputs,image2)
         text.empty()
         st.image(image2, caption='Proccesed Image.')
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         my_bar.progress(100)
         
 #function for landmark identification

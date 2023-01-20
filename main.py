@@ -166,7 +166,7 @@ def obj_detection_image():
             
         ## Model Files        
         modelConfiguration = "yolov3.cfg"
-        modelWeights = "https://pjreddie.com/media/files/yolov3.weights"
+        modelWeights = "https://github.com/patrick013/Object-Detection---Yolov3/blob/master/model/yolov3.weights"
         net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
         net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
         net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)

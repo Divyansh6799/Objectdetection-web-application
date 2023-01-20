@@ -242,19 +242,19 @@ def landmark_detection() :
             LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_asia_V1_label_map.csv'
         elif chs_region=="Africa":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_africa_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_africa_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_africa_V1_label_map.csv'
         elif chs_region=="Europe":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_europe_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_europe_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_europe_V1_label_map.csv'
         elif chs_region=="North America":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_north_america_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_north_america_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_north_america_V1_label_map.csv'
         elif chs_region=="South America":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_south_america_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_south_america_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_south_america_V1_label_map.csv'
         elif chs_region=="Oceania & Antarctica":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_oceania_antarctica_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_oceania_antarctica_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_oceania_antarctica_V1_label_map.csv'
         IMAGE_SHAPE = (321, 321)
         classifier = tf.keras.Sequential([hub.KerasLayer(TF_MODEL_URL,
                                                  input_shape=IMAGE_SHAPE+(3,),

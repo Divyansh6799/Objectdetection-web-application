@@ -239,7 +239,7 @@ def landmark_detection() :
         LABEL_MAP_URL=""
         if chs_region=="Asia":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_asia_V1/1'
-            LABEL_MAP_URL = r'labelmaps\landmarks_classifier_asia_V1_label_map.csv'
+            LABEL_MAP_URL = 'https://www.gstatic.com/aihub/tfhub/labelmaps/landmarks_classifier_asia_V1_label_map.csv'
         elif chs_region=="Africa":
             TF_MODEL_URL = 'https://tfhub.dev/google/on_device_vision/classifier/landmarks_classifier_africa_V1/1'
             LABEL_MAP_URL = r'labelmaps\landmarks_classifier_africa_V1_label_map.csv'

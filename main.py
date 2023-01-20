@@ -159,7 +159,7 @@ def obj_detection_image():
         whT = 320
         #### LOAD MODEL
         ## Coco Names
-        classesFile = 'coco.names
+        classesFile = "coco.names"
         classNames = []
         with open(classesFile, 'rt') as f:
             classNames = f.read().split('\n')

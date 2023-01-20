@@ -270,6 +270,7 @@ def landmark_detection() :
         my_bar.progress(100)
 
 def main():
+    st.set_page_config(page_title="Detecto")
     page_bg_img = f"""
     <style>
     [data-testid="stAppViewContainer"] > .main {{

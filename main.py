@@ -129,8 +129,8 @@ def object_detection_video():
                         # now put the text (label: confidence %)
                         cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,
                             fontScale=font_scale, color=(0, 0, 0), thickness=thickness)
-                        cv2.putText(image, "press q to exit", (10,20), cv2.FONT_HERSHEY_SIMPLEX,
-                            fontScale=font_scale, color=(0,0,255), thickness=4)
+                        # cv2.putText(image, "press q to exit", (10,20), cv2.FONT_HERSHEY_SIMPLEX,
+                        #     fontScale=font_scale, color=(0,0,255), thickness=4)
 
                 out.write(image)
                 # cv2.imshow("Detection", image)

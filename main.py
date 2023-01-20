@@ -274,14 +274,14 @@ def main():
     page_bg_img = f"""
     <style>
     [data-testid="stAppViewContainer"] > .main {{
-    background-image: url("https://plus.unsplash.com/premium_photo-1670659359754-02934f07580f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fHRlY2hub2xvZ3klMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
+    # background-image: url("https://plus.unsplash.com/premium_photo-1670659359754-02934f07580f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fHRlY2hub2xvZ3klMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
     background-size: 100%;
     background-position: top ;
     background-repeat: repeat;
     background-attachment: local;
     }}
     [data-testid="stSidebar"] > div:first-child {{
-    background-image: url("https://images.unsplash.com/photo-1470811976196-8ee4fa278c5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Mnw0NzI2NTI5fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
+    # background-image: url("https://images.unsplash.com/photo-1470811976196-8ee4fa278c5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8Mnw0NzI2NTI5fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
     background-size: 100%;
     background-position: center; 
     background-repeat: no-repeat;
@@ -298,7 +298,7 @@ def main():
     st.markdown(page_bg_img, unsafe_allow_html=True)
     new_title = '<p style="font-size: 80px; color:blue">DETECTO</p>''<p style="font-size: 30px;">Welcome to The Object Detection App!</p>'
     read_me_0 = st.markdown(new_title, unsafe_allow_html=True)
-    read_me = st.markdown("""<p style="font-size: 20px; color:black">
+    read_me = st.markdown("""
     This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
     & images, Also Identify the Landmarks Of the world.
@@ -313,7 +313,7 @@ def main():
     Follow Us On:
         [Github](https://github.com/Divyansh6799/) &
         [Linkedin](https://www.linkedin.com/in/divyansh-trivedi-1551581bb/)
-        </p>"""
+        """
     )
     st.sidebar.title("DETECTO")
     choice  = st.sidebar.selectbox("Select OPTION",("About","Object Detection(Image)","Object Detection(Video)","Landmark identification"))

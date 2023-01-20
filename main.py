@@ -298,7 +298,7 @@ def main():
     st.markdown(page_bg_img, unsafe_allow_html=True)
     new_title = '<p style="font-size: 80px; color:blue">DETECTO</p>''<p style="font-size: 30px;">Welcome to The Object Detection App!</p>'
     read_me_0 = st.markdown(new_title, unsafe_allow_html=True)
-    read_me = st.markdown("""
+    read_me = st.markdown("""<p style="font-size: 20px; color:black">
     This App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
     & images, Also Identify the Landmarks Of the world.
@@ -313,7 +313,7 @@ def main():
     Follow Us On:
         [Github](https://github.com/Divyansh6799/) &
         [Linkedin](https://www.linkedin.com/in/divyansh-trivedi-1551581bb/)
-        """
+        </p>"""
     )
     st.sidebar.title("DETECTO")
     choice  = st.sidebar.selectbox("Select OPTION",("About","Object Detection(Image)","Object Detection(Video)","Landmark identification"))

@@ -143,7 +143,6 @@ def object_detection_video():
         cap.release()
         cv2.destroyAllWindows()
           
-
 #function for object detection
 def obj_detection_image():
     st.title('Object Detection For Images')

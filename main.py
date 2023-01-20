@@ -27,7 +27,7 @@ def object_detection_video():
     weights_path = "yolov3.weights"
     font_scale = 1
     thickness = 1
-    url = "coco.names"
+    url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names"
     f = urllib.request.urlopen(url)
     labels = [line.decode('utf-8').strip() for  line in f]
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")

@@ -304,7 +304,7 @@ def main():
     & images, Also Identify the Landmarks Of the world.
     This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video or image. The full list of the classes can be found 
-    [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
+    [here](https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names).
 
     Select Option To Try Features in Sidebar which present On Left .....
 
@@ -322,7 +322,7 @@ def main():
     to demonstrate YOLO Object detection in both videos(pre-recorded)
     and images.This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video & images, Also Identify the Landmarks Of the world. The full list of the classes can be found 
-    [here](https://github.com/Divyansh6799/Objectdetection-web-application/blob/master/labels/coconames.txt).
+    [here](https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names).
 
     Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
 

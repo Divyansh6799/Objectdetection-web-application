@@ -133,15 +133,15 @@ def object_detection_video():
                             fontScale=font_scale, color=(0,0,255), thickness=4)
 
                 out.write(image)
-                cv2.imshow("Detection", image)
-                if ord("q") == cv2.waitKey(1):
-                    break
+                # cv2.imshow("Detection", image)
+                # if ord("q") == cv2.waitKey(1):
+                #     break
             else:
                 break
 
         text_1.empty()
         cap.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
           
 #function for object detection
 def obj_detection_image():

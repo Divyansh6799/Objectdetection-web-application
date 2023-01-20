@@ -159,7 +159,7 @@ def obj_detection_image():
         whT = 320
         #### LOAD MODEL
         ## Coco Names
-        classesFile = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/labels/coconames.txt"
+        classesFile = 'https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/labels/coconames.txt'
         classNames = []
         with open(classesFile, 'rt') as f:
             classNames = f.read().split('\n')

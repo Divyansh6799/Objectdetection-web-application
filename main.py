@@ -269,6 +269,59 @@ def landmark_detection() :
         st.header(label_map[np.argmax(prediction)])
         my_bar.progress(100)
 
+#image Processing
+def photo():
+    st.header("Thresholding, Edge Detection and Contours")
+    # if st.button('See Original Image of Tom'):
+    uploaded_file = st.file_uploader("Upload a image",type='jpg')
+    if uploaded_file != None:
+        image1 = Image.open(uploaded_file)
+        image2 =np.array(image1)
+        st.image(image1, caption='Uploaded Image.')
+        image = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+        x = st.slider('Change Threshold value',min_value = 50,max_value = 255)  
+        ret,thresh1 = cv2.threshold(image,x,255,cv2.THRESH_BINARY)
+        thresh1 = thresh1.astype(np.float64)
+        st.image(thresh1, use_column_width=True,clamp = True)
+        st.text("Bar Chart of the image")
+        histr = cv2.calcHist([image],[0],None,[256],[0,256])
+        st.bar_chart(histr)
+        
+        st.text("View of Canny Edge Detection Technique")
+        edges = cv2.Canny(image,50,300)
+        st.image(edges,use_column_width=True,clamp=True)
+        
+        y = st.slider('Change Value to increase or decrease contours',min_value = 50,max_value = 255)     
+        ret,thresh = cv2.threshold(image,y,255,0)
+        contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        img = cv2.drawContours(image, contours, -1, (0,255,0), 3)
+        st.image(thresh, use_column_width=True, clamp = True)
+        st.image(img, use_column_width=True, clamp = True)
+
+#Feature Detection
+def feature_detection():
+    st.subheader('Feature Detection in images')
+    uploaded_file = st.file_uploader("Upload a image",type='jpg')
+    if uploaded_file != None:
+        image1 = Image.open(uploaded_file)
+        image2 =np.array(image1)
+        st.image(image1, caption='Uploaded Image.')
+        st.write("SIFT")
+        gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+        sift = cv2.SIFT_create()    
+        keypoints = sift.detect(gray, None)
+        st.write("Number of keypoints Detected: ",len(keypoints))
+        image = cv2.drawKeypoints(image2, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        st.image(image, use_column_width=True,clamp = True)
+        st.write("FAST")
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        fast = cv2.FastFeatureDetector_create()
+        keypoints = fast.detect(gray, None)
+        st.write("Number of keypoints Detected: ",len(keypoints))
+        image_  = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        st.image(image_, use_column_width=True,clamp = True)       
+
+
 def main():
     st.set_page_config(page_title="Detecto")
     page_bg_img = f"""
@@ -299,9 +352,9 @@ def main():
     new_title = '<p style="font-size: 80px; color:blue">DETECTO</p>''<p style="font-size: 30px;">Welcome to The Object Detection App!</p>'
     read_me_0 = st.markdown(new_title, unsafe_allow_html=True)
     read_me = st.markdown("""
-    This App was built using Streamlit and OpenCV 
+    DETECTO App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
-    & images, Also Identify the Landmarks Of the world.
+    & images, Also Some More Features Like Identify the Landmarks Of the world,Image Processing,Feature Detection
     This YOLO object Detection project can detect 80 objects(i.e classes)
     in either a video or image. The full list of the classes can be found 
     [here](https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names).
@@ -316,13 +369,16 @@ def main():
         """
     )
     st.sidebar.title("DETECTO")
-    choice  = st.sidebar.selectbox("Select OPTION",("About","Object Detection(Image)","Object Detection(Video)","Landmark identification"))
+    choice  = st.sidebar.selectbox("Select Feature",("About","Object Detection(Image)","Object Detection(Video)","Landmark identification","Image Processing","Feature Detection"))
     read=st.sidebar.markdown("""
-    This App was built using Streamlit and OpenCV 
+    DETECTO App was built using Streamlit and OpenCV 
     to demonstrate YOLO Object detection in both videos(pre-recorded)
-    and images.This YOLO object Detection project can detect 80 objects(i.e classes)
-    in either a video & images, Also Identify the Landmarks Of the world. The full list of the classes can be found 
+    & images, Also Some More Features Like Identify the Landmarks Of the world,Image Processing,Feature Detection
+    This YOLO object Detection project can detect 80 objects(i.e classes)
+    in either a video or image. The full list of the classes can be found 
     [here](https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names).
+
+    Select Option To Try Features in Sidebar which present On Left .....
 
     Developed By [Divyansh Trivedi](https://divyanshtrivediportfolio.netlify.app/) 
 
@@ -357,6 +413,16 @@ def main():
         read_me_0.empty()
         read_me.empty()
         landmark_detection() 
+
+    elif choice == 'Image Processing':
+        read_me_0.empty()
+        read_me.empty()
+        photo()
+
+    elif choice == 'Feature Detection':
+        read_me_0.empty()
+        read_me.empty()
+        feature_detection()
 
     elif choice == "About":
         print()

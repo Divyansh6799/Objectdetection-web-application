@@ -16,6 +16,7 @@ import cv2
 import numpy as np
 import time
 import sys
+import requests
 
 def object_detection_video():
     #object_detection_video.has_beenCalled = True
@@ -24,7 +25,11 @@ def object_detection_video():
     SCORE_THRESHOLD = 0.5
     IOU_THRESHOLD = 0.5
     config_path = "yolov3.cfg"
-    weights_path = "yolov3.weights"
+    weights_url = 'https://pjreddie.com/media/files/yolov3.weights'
+    weights_response = requests.get(weights_url)
+    weights_path = 'yolov3.weights'
+    with open(weights_path, 'wb') as weights_file:
+	weights_file.write(weights_response.content)
     font_scale = 1
     thickness = 1
     url = "https://raw.githubusercontent.com/Divyansh6799/Objectdetection-web-application/master/coco.names"
